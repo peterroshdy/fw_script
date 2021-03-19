@@ -88,4 +88,3 @@ def permit__commit(host, username, password, work_order_number, first_zone, seco
     return outputt
     cli.close()
 
-##set__and__commit(server, username, password, "10.12.34.66", "C42342", "Corprate", "DBB")
