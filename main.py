@@ -1,4 +1,8 @@
 
+####################################
+# Spaghetti code by Eng Peter Ehab #
+####################################
+
 import paramiko
 import difflib
 
@@ -46,5 +50,42 @@ def get__zone(host, username, password, lookup_int):
             outputt.append(word)
     first_zone = outputt[outputt.index("Zone:")+1]
     return first_zone
+    cli.close()
+
     
-get__zone(server, username, password, "dasd")
+def set__security__pol__on__ip(host, username, password, src_ip, work_order_number, first_zone, second_zone):
+    ## opens a ssh session to get the interface on the src ip
+    cli = paramiko.client.SSHClient()
+    cli.set_missing_host_key_policy(paramiko.client.AutoAddPolicy())
+    cli.connect(hostname=host, username=username, password=password)
+    command = " set security policies from-zone "+first_zone+" to-zone "+second_zone+" policy "+work_order_number+" match source-address "+src_ip
+    stdin_, stdout_, stderr_ = cli.exec_command("set security policies from-zone "+first_zone+" to-zone "+second_zone+" policy "+work_order_number+" match source-address "+src_ip)
+    stdout_.channel.recv_exit_status()
+    lines = stdout_.readlines()
+    outputt  = []
+    
+    for line in lines:
+        for word in line.split():
+            outputt.append(word)
+    return outputt
+
+    cli.close()
+
+def permit__commit(host, username, password, work_order_number, first_zone, second_zone):
+    ## opens a ssh session to get the interface on the src ip
+    cli = paramiko.client.SSHClient()
+    cli.set_missing_host_key_policy(paramiko.client.AutoAddPolicy())
+    cli.connect(hostname=host, username=username, password=password)
+    command = " set security policies from-zone "+first_zone+" to-zone "+second_zone+" policy "+work_order_number+" match source-address "+src_ip
+    stdin_, stdout_, stderr_ = cli.exec_command("set security policies from-zone "+first_zone+" to-zone "+second_zone+" policy "+work_order_number+" then permit "+" && commit")
+    stdout_.channel.recv_exit_status()
+    lines = stdout_.readlines()
+    outputt  = []
+    
+    for line in lines:
+        for word in line.split():
+            outputt.append(word)
+    return outputt
+    cli.close()
+
+##set__and__commit(server, username, password, "10.12.34.66", "C42342", "Corprate", "DBB")
